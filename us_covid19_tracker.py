@@ -5,6 +5,7 @@ import urllib.request
 import json
 import os.path
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from datetime import datetime, timedelta
 
 
@@ -56,10 +57,9 @@ class DrawData(object):
 
 def draw(draw_data_list):
     draw_data_list.sort(key=lambda draw_data: draw_data.date)
-    date_list = list(map(lambda draw_data: draw_data.date, draw_data_list))
+    date_list = list(map(lambda draw_data: str(draw_data.date)[4:], draw_data_list))
     positive_rate_list = list(map(lambda draw_data: draw_data.positive_rate, draw_data_list))
-    plt.plot(range(len(date_list)), positive_rate_list)
-    plt.axis([0, len(date_list), 0, 1])
+    plt.plot(date_list, positive_rate_list, "bo-")
     plt.xlabel("date")
     plt.ylabel("positive rate")
     plt.show()

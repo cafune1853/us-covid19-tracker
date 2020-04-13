@@ -60,6 +60,8 @@ def draw(draw_data_list):
     positive_rate_list = list(map(lambda draw_data: draw_data.positive_rate, draw_data_list))
     plt.plot(range(len(date_list)), positive_rate_list)
     plt.axis([0, len(date_list), 0, 1])
+    plt.xlabel("日期")
+    plt.ylabel("阳性率")
     plt.show()
 
 

@@ -92,7 +92,7 @@ if __name__ == '__main__':
         rowDataList.append(RowData(rowDict))
 
     while True:
-        date_draw_data_dict = {}
+        date_to_draw_data_dict = {}
         state_name_to_display = input("Please input state name to display, * for all, e to exit:")
         if 'e' == state_name_to_display:
             break
@@ -100,10 +100,10 @@ if __name__ == '__main__':
             if ('*' == state_name_to_display or state_name_to_display == row_data.state) and (
                     row_data.date is not None and row_data.total_test_results_increase is not None and row_data.positive_increase is not None):
                 dd = DrawData(row_data.date, row_data.positive_increase, row_data.total_test_results_increase)
-                draw_data = date_draw_data_dict.get(row_data.date)
+                draw_data = date_to_draw_data_dict.get(row_data.date)
                 if draw_data is None:
-                    date_draw_data_dict[row_data.date] = dd
+                    date_to_draw_data_dict[row_data.date] = dd
                 else:
                     draw_data.plus(dd)
-        draw(list(date_draw_data_dict.values()))
+        draw(list(date_to_draw_data_dict.values()))
 

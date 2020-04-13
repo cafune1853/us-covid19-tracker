@@ -35,27 +35,28 @@ class RowData(object):
 
 
 class DrawData(object):
-    def __init__(self, date, total_positive, total_test):
+    def __init__(self, date, positive_increment, test_increment):
         self.date = date
-        self.total_positive = total_positive
-        self.total_test = total_test
-        if self.total_test != 0:
-            self.positive_rate = self.total_positive / self.total_test
+        self.positive_increment = positive_increment
+        self.test_increment = test_increment
+        if self.test_increment != 0:
+            self.positive_rate = self.positive_increment / self.test_increment * 100
         else:
             self.positive_rate = 0
 
     def plus(self, other):
         if self.date == other.date:
-            self.total_positive = self.total_positive + other.total_positive
-            self.total_test = self.total_test + other.total_test
-            if self.total_test != 0:
-                self.positive_rate = self.total_positive / self.total_test
+            self.positive_increment = self.positive_increment + other.positive_increment
+            self.test_increment = self.test_increment + other.test_increment
+            if self.test_increment != 0:
+                self.positive_rate = self.positive_increment / self.test_increment * 100
             else:
                 self.positive_rate = 0
 
 
 def draw(title, draw_data_list):
     draw_data_list.sort(key=lambda draw_data: draw_data.date)
+    print("Latest data %s, %s positive, %s tested, %s positive rate" % (draw_data_list[-1].date, draw_data_list[-1].positive_increment, draw_data_list[-1].test_increment, draw_data_list[-1].positive_rate))
     date_list = list(map(lambda draw_data: str(draw_data.date)[4:], draw_data_list))
     positive_rate_list = list(map(lambda draw_data: draw_data.positive_rate, draw_data_list))
     plt.plot(date_list, positive_rate_list, "bo-")
@@ -66,7 +67,7 @@ def draw(title, draw_data_list):
     plt.gca().set_xticks(x_ticks)
     plt.gca().set_xticklabels(x_labels)
     plt.xlabel("date")
-    plt.ylabel("positive rate")
+    plt.ylabel("positive rate(%)")
     plt.title(title)
     plt.show()
 
@@ -113,5 +114,5 @@ if __name__ == '__main__':
                     date_to_draw_data_dict[row_data.date] = dd
                 else:
                     draw_data.plus(dd)
-        draw("Covid19 positive rate for %s " % state_name_to_display , list(date_to_draw_data_dict.values()))
+        draw("Covid19 positive rate for %s " % state_name_to_display, list(date_to_draw_data_dict.values()))
 

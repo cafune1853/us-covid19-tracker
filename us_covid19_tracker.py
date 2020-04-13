@@ -5,7 +5,6 @@ import urllib.request
 import json
 import os.path
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 from datetime import datetime, timedelta
 
 
@@ -55,13 +54,20 @@ class DrawData(object):
                 self.positive_rate = 0
 
 
-def draw(draw_data_list):
+def draw(title, draw_data_list):
     draw_data_list.sort(key=lambda draw_data: draw_data.date)
     date_list = list(map(lambda draw_data: str(draw_data.date)[4:], draw_data_list))
     positive_rate_list = list(map(lambda draw_data: draw_data.positive_rate, draw_data_list))
     plt.plot(date_list, positive_rate_list, "bo-")
+    x_ticks = list(range(0, len(date_list), 4))
+    x_ticks.append(len(date_list) - 1)
+    x_labels = [date_list[x] for x in x_ticks]
+    x_labels.append(date_list[-1])
+    plt.gca().set_xticks(x_ticks)
+    plt.gca().set_xticklabels(x_labels)
     plt.xlabel("date")
     plt.ylabel("positive rate")
+    plt.title(title)
     plt.show()
 
 
@@ -95,11 +101,11 @@ if __name__ == '__main__':
 
     while True:
         date_to_draw_data_dict = {}
-        state_name_to_display = input("Please input state name to display, * for all, e to exit:")
+        state_name_to_display = input("Please input state name to display, US for all, e to exit:")
         if 'e' == state_name_to_display:
             break
         for row_data in rowDataList:
-            if ('*' == state_name_to_display or state_name_to_display == row_data.state) and (
+            if ('US' == state_name_to_display or state_name_to_display == row_data.state) and (
                     row_data.date is not None and row_data.total_test_results_increase is not None and row_data.positive_increase is not None):
                 dd = DrawData(row_data.date, row_data.positive_increase, row_data.total_test_results_increase)
                 draw_data = date_to_draw_data_dict.get(row_data.date)
@@ -107,5 +113,5 @@ if __name__ == '__main__':
                     date_to_draw_data_dict[row_data.date] = dd
                 else:
                     draw_data.plus(dd)
-        draw(list(date_to_draw_data_dict.values()))
+        draw("Covid19 positive rate for %s " % state_name_to_display , list(date_to_draw_data_dict.values()))
 

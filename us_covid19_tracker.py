@@ -56,7 +56,8 @@ class DrawData(object):
 
 def draw(title, draw_data_list):
     draw_data_list.sort(key=lambda draw_data: draw_data.date)
-    print("Latest data %s, %s positive, %s tested, %s positive rate" % (draw_data_list[-1].date, draw_data_list[-1].positive_increment, draw_data_list[-1].test_increment, draw_data_list[-1].positive_rate))
+    if len(draw_data_list) > 0:
+        print("Latest data %s, positive:%s, tested:%s, positive rate:%s" % (draw_data_list[-1].date, draw_data_list[-1].positive_increment, draw_data_list[-1].test_increment, draw_data_list[-1].positive_rate))
     date_list = list(map(lambda draw_data: str(draw_data.date)[4:], draw_data_list))
     positive_rate_list = list(map(lambda draw_data: draw_data.positive_rate, draw_data_list))
     plt.plot(date_list, positive_rate_list, "bo-")

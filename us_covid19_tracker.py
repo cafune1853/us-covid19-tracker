@@ -61,12 +61,13 @@ def draw(title, draw_data_list):
     date_list = list(map(lambda draw_data: str(draw_data.date)[4:], draw_data_list))
     positive_rate_list = list(map(lambda draw_data: draw_data.positive_rate, draw_data_list))
     plt.plot(date_list, positive_rate_list, "bo-")
-    x_ticks = list(range(0, len(date_list), 4))
-    x_ticks.append(len(date_list) - 1)
-    x_labels = [date_list[x] for x in x_ticks]
-    x_labels.append(date_list[-1])
-    plt.gca().set_xticks(x_ticks)
-    plt.gca().set_xticklabels(x_labels)
+    if len(draw_data_list) > 0:
+        x_ticks = list(range(0, len(date_list), 4))
+        x_ticks.append(len(date_list) - 1)
+        x_labels = [date_list[x] for x in x_ticks]
+        x_labels.append(date_list[-1])
+        plt.gca().set_xticks(x_ticks)
+        plt.gca().set_xticklabels(x_labels)
     plt.xlabel("date")
     plt.ylabel("positive rate(%)")
     plt.title(title)

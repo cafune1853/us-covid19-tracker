@@ -6,6 +6,9 @@ import json
 import os.path
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
+import os
+
+CACHE_FILE_PATH = "/tmp/cache_daily_file"
 
 
 class RowData(object):
@@ -75,9 +78,8 @@ def draw(title, draw_data_list):
 
 
 def load_data():
-    cache_file_path = "/tmp/cache_daily_file"
-    if os.path.isfile(cache_file_path):
-        rf = open(cache_file_path, 'r')
+    if os.path.isfile(CACHE_FILE_PATH):
+        rf = open(CACHE_FILE_PATH, 'r')
         data_str = rf.read()
         rf.close()
         if datetime.strftime(datetime.now() - timedelta(1), '%Y%m%d') in data_str:
@@ -86,7 +88,7 @@ def load_data():
         try:
             print("Start loading data %s ..." % (i + 1))
             data_str = urllib.request.urlopen("https://covidtracking.com/api/v1/states/daily.json", timeout=10).read().decode()
-            wf = open(cache_file_path, 'w')
+            wf = open(CACHE_FILE_PATH, 'w')
             wf.write(data_str)
             wf.close()
             print("Data loaded.")
@@ -104,8 +106,16 @@ if __name__ == '__main__':
 
     while True:
         date_to_draw_data_dict = {}
-        state_name_to_display = input("Please input state name to display, US for all, e to exit:")
-        if 'e' == state_name_to_display:
+        state_name_to_display = input("Please input state name to display, US for all, CLC to clean cache file, E to exit:")
+        if 'CLC' == state_name_to_display:
+            if os.path.exists(CACHE_FILE_PATH):
+                os.remove(CACHE_FILE_PATH)
+                data = json.loads(load_data())
+                rowDataList = []
+                for rowDict in data:
+                    rowDataList.append(RowData(rowDict))
+            continue
+        if 'E' == state_name_to_display:
             break
         for row_data in rowDataList:
             if ('US' == state_name_to_display or state_name_to_display == row_data.state) and (

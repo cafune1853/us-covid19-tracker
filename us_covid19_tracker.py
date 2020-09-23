@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import urllib.request
+import requests
 import json
 import os.path
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import os
+
 
 CACHE_FILE_PATH = "/tmp/cache_daily_file"
 
@@ -87,7 +88,7 @@ def load_data():
     for i in range(5):
         try:
             print("Start loading data %s ..." % (i + 1))
-            data_str = urllib.request.urlopen("https://covidtracking.com/api/v1/states/daily.json", timeout=10).read().decode()
+            data_str = requests.get("https://covidtracking.com/api/v1/states/daily.json").text
             wf = open(CACHE_FILE_PATH, 'w')
             wf.write(data_str)
             wf.close()
